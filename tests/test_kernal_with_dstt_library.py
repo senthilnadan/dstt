@@ -1,5 +1,6 @@
 import pytest
 from dsttkernal import DsttKernal
+from tool_provider import ToolProvider
 
 def test_execute_singe_as_named_segment():
     square_dstt = {
@@ -19,7 +20,7 @@ def test_execute_singe_as_named_segment():
     }
     
     kernal = DsttKernal()
-    result = kernal.execute(square_dstt, initial_state={"x": 5})
+    result = kernal.execute(square_dstt, ToolProvider, initial_state={"x": 5})
     
     assert result == {"product": 25}
 
@@ -48,6 +49,6 @@ def test_execute_multiple_segments_as_named_segment():
     }
     
     kernal = DsttKernal()
-    result = kernal.execute(fourthpower_dstt, initial_state={"x": 5})
+    result = kernal.execute(fourthpower_dstt, ToolProvider, initial_state={"x": 5})
     
     assert result == {"fourthpower": 625}

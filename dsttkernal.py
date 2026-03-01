@@ -1,14 +1,12 @@
-import library
-from dstt_library import named_dstt
 class DsttKernal:
-    def execute(self, dstt_structure: dict, initial_state: dict = None) -> dict:
+    def execute(self, dstt_structure: dict, tool_provider, initial_state: dict = None) -> dict:
         state = initial_state.copy() if initial_state else {}
         
         segments = dstt_structure.get("segments", [])
         for segment in segments:
             for transition in segment.get("transitions", []):
                 inputs = self._validate_inputs(transition, state)
-                result = self._call_tool(transition, inputs)
+                result = self._call_tool(transition, inputs, tool_provider)
                 state.update(result)
                 
             state = self._compress_to_milestone(state, segment.get("milestone", []))
@@ -35,27 +33,20 @@ class DsttKernal:
             for key, value in zip(outputs_keys, tool_result):
                 result_dict[key] = value
 
-    def _execute_tool(self, tool_name, inputs, outputs_keys, result_dict):
-        if hasattr(library, tool_name):
-            tool_func = getattr(library, tool_name)
-            tool_result = tool_func(*inputs)
-            self._map_outputs_to_result(outputs_keys, tool_result, result_dict)
-        else:
-            if tool_name in named_dstt:
-                tool_func = named_dstt[tool_name]
-                kernal = DsttKernal()
-                tool_result = kernal.execute(tool_func, inputs)
-                self._map_outputs_to_result(outputs_keys, tool_result, result_dict)
-            else:
-                raise ValueError(f"Tool not found: {tool_name}")
+    def _execute_tool(self, tool_name, inputs, outputs_keys, result_dict, tool_provider):
+        if not tool_provider:
+            raise ValueError("Tool provider not configured")
+        tool = tool_provider.get(tool_name)
+        tool_result = tool.execute(*inputs)
+        self._map_outputs_to_result(outputs_keys, tool_result, result_dict)
         return tool_result
 
-    def _call_tool(self, transition: dict, inputs: list) -> dict:
+    def _call_tool(self, transition: dict, inputs: list, tool_provider) -> dict:
         tool_name = transition.get("tool")
         outputs_keys = transition.get("outputs", [])
         result_dict = {}
         
-        value = self._execute_tool(tool_name, inputs, outputs_keys, result_dict)
+        value = self._execute_tool(tool_name, inputs, outputs_keys, result_dict, tool_provider)
                     
         return result_dict
 

@@ -1,5 +1,6 @@
 import pytest
 from dsttkernal import DsttKernal
+from tool_provider import ToolProvider
 
 def test_execute_multiple_segments():
     test_dstt_content = {
@@ -32,7 +33,7 @@ def test_execute_multiple_segments():
     kernal = DsttKernal()
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content)
+    result = kernal.execute(test_dstt_content, ToolProvider)
     
     # We expect 'result' to return the state accumulated and compressed by the final segment's milestone
     assert result == {"username": "alice123"}
@@ -60,7 +61,7 @@ def test_execute_multiple_segments_miltiple_artifact():
     kernal = DsttKernal()
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, initial_state={"a": "Hello", "b": "World"})
+    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"a": "Hello", "b": "World"})
     
     # We expect 'result' to return the state accumulated and compressed by the final segment's milestone
     assert result == {"c": "HelloWorld"}
@@ -90,7 +91,7 @@ def test_execute_multiple_segments_miltiple_artifact():
     kernal = DsttKernal()
     
     with pytest.raises(ValueError) as exc_info:
-        result = kernal.execute(test_dstt_content, initial_state={"a": "Hello", "b": "World"})
+        result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"a": "Hello", "b": "World"})
         
     assert str(exc_info.value) == "Missing Input: d"
 
@@ -120,7 +121,7 @@ def test_execute_multiple_segments_miltiple_overwrite():
     kernal = DsttKernal()
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, initial_state={"a": "Hello", "b": "World"})
+    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"a": "Hello", "b": "World"})
     
     # We expect 'result' to return the state accumulated and compressed by the final segment's milestone
     assert result == {"c": "WorldHello"}
@@ -147,7 +148,7 @@ def test_execute_multiple_segments_identity():
     kernal = DsttKernal()
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, initial_state={"a": "Hello", "b": "World"})
+    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"a": "Hello", "b": "World"})
     
     # We expect 'result' to return the state accumulated and compressed by the final segment's milestone
     assert result == {"c": "HelloWorld"}

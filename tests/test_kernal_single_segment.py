@@ -1,6 +1,7 @@
 import json
 import pytest
 from dsttkernal import DsttKernal
+from tool_provider import ToolProvider
 
 def test_execute_singe_const():
     # Setup our test dstt file with the sample JSON provided
@@ -24,7 +25,7 @@ def test_execute_singe_const():
     kernal = DsttKernal()
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content)
+    result = kernal.execute(test_dstt_content, ToolProvider)
     # For a 'const' tool with no inputs, let's assume it should output a specific value, e.g., True or a default value.
     # of execution returns the milestone 'x' mapping to some output.
     # Since we haven't defined the const tool's exact behavior yet, let's just assert that
@@ -57,7 +58,7 @@ def test_execute_singe_echo_tool():
     kernal = DsttKernal()
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, initial_state={"msg": "Hello"})
+    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"msg": "Hello"})
     # For a 'const' tool with no inputs, let's assume it should output a specific value, e.g., True or a default value.
     # of execution returns the milestone 'x' mapping to some output.
     # Since we haven't defined the const tool's exact behavior yet, let's just assert that
@@ -97,7 +98,7 @@ def test_execute_two_transitions():
     kernal = DsttKernal()
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, initial_state={"val1": "Hello", "val2": "World"})
+    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"val1": "Hello", "val2": "World"})
     # For a 'const' tool with no inputs, let's assume it should output a specific value, e.g., True or a default value.
     # of execution returns the milestone 'x' mapping to some output.
     # Since we haven't defined the const tool's exact behavior yet, let's just assert that
@@ -135,7 +136,7 @@ def test_execute_mutation_test():
     kernal = DsttKernal()
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, initial_state={"val1": {"data": "Hello"}, "val2": "World"})
+    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"val1": {"data": "Hello"}, "val2": "World"})
 
     assert result == {"x": "World"}
 
@@ -160,7 +161,7 @@ def test_execute_undefined_tool():
     
     # We expect this to raise a ValueError
     with pytest.raises(ValueError) as exc_info:
-        kernal.execute(test_dstt_content)
+        kernal.execute(test_dstt_content, ToolProvider)
         
     assert str(exc_info.value) == "Tool not found: undefined_tool"
 
@@ -184,7 +185,7 @@ def test_execute_initial_state():
     kernal = DsttKernal()
     
     # We pass an initial state containing 'x', and expect the tool to echo it into 'y'
-    result = kernal.execute(test_dstt_content, initial_state={"x": 5})
+    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"x": 5})
     
     assert result == {"y": 5}
 
@@ -208,7 +209,7 @@ def test_execute_missing_variable_fails():
     kernal = DsttKernal()
     
     with pytest.raises(ValueError) as exc_info:
-        kernal.execute(test_dstt_content)
+        kernal.execute(test_dstt_content, ToolProvider)
         
     assert str(exc_info.value) == "Missing Input: missing_var"
 
@@ -232,6 +233,6 @@ def test_execute_output_canbe_a_dict_fails():
     
     kernal = DsttKernal()
     
-    kernal.execute(test_dstt_content)
+    result = kernal.execute(test_dstt_content, ToolProvider)
     assert result == {"user": {"name": "Alice", "age": 30}}
 

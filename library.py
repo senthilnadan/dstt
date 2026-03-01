@@ -15,3 +15,6 @@ def combine(a, b):
 
 def multiply(a, b):
     return a * b
+
+def get_user_data():
+    return {"name": "Alice", "age": 30}
