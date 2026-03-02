@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dstt_kernel"
+version = "1.0.0"
+authors = [
+  { name="Senthil" },
+]
+description = "Python kernel for processing .dstt files with state transitions."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/senthilnadanjothi/dstt"

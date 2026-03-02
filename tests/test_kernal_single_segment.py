@@ -3,8 +3,8 @@ from dstt_library import named_dstt
 import inspect
 import json
 import pytest
-from dsttkernal import DsttKernal
-from tool_provider import ToolProvider
+from dstt_kernel.kernel import DsttKernal
+from dstt_kernel.tool_provider import ToolProvider
 
 def test_execute_singe_const():
     # Setup our test dstt file with the sample JSON provided

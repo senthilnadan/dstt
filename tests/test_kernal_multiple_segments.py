@@ -2,8 +2,8 @@ import library
 from dstt_library import named_dstt
 import inspect
 import pytest
-from dsttkernal import DsttKernal
-from tool_provider import ToolProvider
+from dstt_kernel.kernel import DsttKernal
+from dstt_kernel.tool_provider import ToolProvider
 
 def test_execute_multiple_segments():
     test_dstt_content = {

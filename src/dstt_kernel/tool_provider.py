@@ -27,7 +27,7 @@ class DsttTool:
 
     def execute(self, *inputs):
         # Local import to prevent circular dependency
-        from dsttkernal import DsttKernal
+        from dstt_kernel.kernel import DsttKernal
         kernal = DsttKernal()
         
         sig = self._extract_dstt_signature()
