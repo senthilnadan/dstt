@@ -1,3 +1,6 @@
+import library
+from dstt_library import named_dstt
+import inspect
 import pytest
 from dsttkernal import DsttKernal
 from tool_provider import ToolProvider
@@ -31,9 +34,11 @@ def test_execute_multiple_segments():
     }
     
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, ToolProvider)
+    result = kernal.execute(test_dstt_content, tool_provider_instance)
     
     # We expect 'result' to return the state accumulated and compressed by the final segment's milestone
     assert result == {"username": "alice123"}
@@ -59,9 +64,11 @@ def test_execute_multiple_segments_miltiple_artifact():
     ]
 }
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"a": "Hello", "b": "World"})
+    result = kernal.execute(test_dstt_content, tool_provider_instance, initial_state={"a": "Hello", "b": "World"})
     
     # We expect 'result' to return the state accumulated and compressed by the final segment's milestone
     assert result == {"c": "HelloWorld"}
@@ -89,9 +96,11 @@ def test_execute_multiple_segments_miltiple_artifact():
     ]
 }
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     with pytest.raises(ValueError) as exc_info:
-        result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"a": "Hello", "b": "World"})
+        result = kernal.execute(test_dstt_content, tool_provider_instance, initial_state={"a": "Hello", "b": "World"})
         
     assert str(exc_info.value) == "Missing Input: d"
 
@@ -119,9 +128,11 @@ def test_execute_multiple_segments_miltiple_overwrite():
     ]
 }
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"a": "Hello", "b": "World"})
+    result = kernal.execute(test_dstt_content, tool_provider_instance, initial_state={"a": "Hello", "b": "World"})
     
     # We expect 'result' to return the state accumulated and compressed by the final segment's milestone
     assert result == {"c": "WorldHello"}
@@ -146,9 +157,11 @@ def test_execute_multiple_segments_identity():
     ]
 }
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"a": "Hello", "b": "World"})
+    result = kernal.execute(test_dstt_content, tool_provider_instance, initial_state={"a": "Hello", "b": "World"})
     
     # We expect 'result' to return the state accumulated and compressed by the final segment's milestone
     assert result == {"c": "HelloWorld"}

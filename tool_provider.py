@@ -1,5 +1,4 @@
-import library
-from dstt_library import named_dstt
+
 
 class PythonTool:
     def __init__(self, func):
@@ -9,8 +8,9 @@ class PythonTool:
         return self.func(*inputs)
 
 class DsttTool:
-    def __init__(self, dstt_structure):
+    def __init__(self, dstt_structure, tool_provider):
         self.dstt_structure = dstt_structure
+        self.tool_provider = tool_provider
 
     def _extract_dstt_signature(self) -> list:
         produced = set()
@@ -32,7 +32,7 @@ class DsttTool:
         
         sig = self._extract_dstt_signature()
         initial_state = dict(zip(sig, inputs))
-        dstt_result_dict = kernal.execute(self.dstt_structure, ToolProvider, initial_state=initial_state)
+        dstt_result_dict = kernal.execute(self.dstt_structure, self.tool_provider, initial_state=initial_state)
         
         if len(dstt_result_dict) == 1:
             return list(dstt_result_dict.values())[0]
@@ -40,11 +40,14 @@ class DsttTool:
             return tuple(dstt_result_dict.values())
 
 class ToolProvider:
-    @staticmethod
-    def get(name):
-        if hasattr(library, name):
-            return PythonTool(getattr(library, name))
-        elif name in named_dstt:
-            return DsttTool(named_dstt[name])
+    def __init__(self, python_lib: dict, dstt_lib: dict):
+        self.python_lib = python_lib
+        self.dstt_lib = dstt_lib
+
+    def get(self, name):
+        if name in self.python_lib:
+            return PythonTool(self.python_lib[name])
+        elif name in self.dstt_lib:
+            return DsttTool(self.dstt_lib[name], self)
         else:
             raise ValueError(f"Tool not found: {name}")

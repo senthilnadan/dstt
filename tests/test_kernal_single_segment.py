@@ -1,3 +1,6 @@
+import library
+from dstt_library import named_dstt
+import inspect
 import json
 import pytest
 from dsttkernal import DsttKernal
@@ -23,9 +26,11 @@ def test_execute_singe_const():
     
     # Initialize the kernal
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, ToolProvider)
+    result = kernal.execute(test_dstt_content, tool_provider_instance)
     # For a 'const' tool with no inputs, let's assume it should output a specific value, e.g., True or a default value.
     # of execution returns the milestone 'x' mapping to some output.
     # Since we haven't defined the const tool's exact behavior yet, let's just assert that
@@ -56,9 +61,11 @@ def test_execute_singe_echo_tool():
     
     # Initialize the kernal
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"msg": "Hello"})
+    result = kernal.execute(test_dstt_content, tool_provider_instance, initial_state={"msg": "Hello"})
     # For a 'const' tool with no inputs, let's assume it should output a specific value, e.g., True or a default value.
     # of execution returns the milestone 'x' mapping to some output.
     # Since we haven't defined the const tool's exact behavior yet, let's just assert that
@@ -96,9 +103,11 @@ def test_execute_two_transitions():
     
     # Initialize the kernal
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"val1": "Hello", "val2": "World"})
+    result = kernal.execute(test_dstt_content, tool_provider_instance, initial_state={"val1": "Hello", "val2": "World"})
     # For a 'const' tool with no inputs, let's assume it should output a specific value, e.g., True or a default value.
     # of execution returns the milestone 'x' mapping to some output.
     # Since we haven't defined the const tool's exact behavior yet, let's just assert that
@@ -134,9 +143,11 @@ def test_execute_mutation_test():
     
     # Initialize the kernal
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     # Execute the structure directly via a dictionary instead of a file
-    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"val1": {"data": "Hello"}, "val2": "World"})
+    result = kernal.execute(test_dstt_content, tool_provider_instance, initial_state={"val1": {"data": "Hello"}, "val2": "World"})
 
     assert result == {"x": "World"}
 
@@ -158,10 +169,12 @@ def test_execute_undefined_tool():
     }
     
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     # We expect this to raise a ValueError
     with pytest.raises(ValueError) as exc_info:
-        kernal.execute(test_dstt_content, ToolProvider)
+        kernal.execute(test_dstt_content, tool_provider_instance)
         
     assert str(exc_info.value) == "Tool not found: undefined_tool"
 
@@ -183,9 +196,11 @@ def test_execute_initial_state():
     }
     
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     # We pass an initial state containing 'x', and expect the tool to echo it into 'y'
-    result = kernal.execute(test_dstt_content, ToolProvider, initial_state={"x": 5})
+    result = kernal.execute(test_dstt_content, tool_provider_instance, initial_state={"x": 5})
     
     assert result == {"y": 5}
 
@@ -207,9 +222,11 @@ def test_execute_missing_variable_fails():
     }
     
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
     with pytest.raises(ValueError) as exc_info:
-        kernal.execute(test_dstt_content, ToolProvider)
+        kernal.execute(test_dstt_content, tool_provider_instance)
         
     assert str(exc_info.value) == "Missing Input: missing_var"
 
@@ -232,7 +249,9 @@ def test_execute_output_canbe_a_dict_fails():
     }
     
     kernal = DsttKernal()
+    python_lib = {name: getattr(library, name) for name in dir(library) if inspect.isfunction(getattr(library, name))}
+    tool_provider_instance = ToolProvider(python_lib, named_dstt)
     
-    result = kernal.execute(test_dstt_content, ToolProvider)
+    result = kernal.execute(test_dstt_content, tool_provider_instance)
     assert result == {"user": {"name": "Alice", "age": 30}}
 
