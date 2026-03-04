@@ -22,8 +22,8 @@ class DsttTool:
                 inputs.update(transition.get("inputs", []))
                 outputs.update(transition.get("outputs", []))
 
-    signature = list(inputs - outputs)
-    return sorted(signature)
+        signature = list(inputs - outputs)
+        return sorted(signature)
 
     def execute(self, *inputs):
         # Local import to prevent circular dependency
