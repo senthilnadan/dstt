@@ -13,17 +13,17 @@ class DsttTool:
         self.tool_provider = tool_provider
 
     def _extract_dstt_signature(self) -> list:
-        produced = set()
-        signature = []
+        inputs = set()
+        outputs = set()
+
         segments = self.dstt_structure.get("segments", [])
         for segment in segments:
             for transition in segment.get("transitions", []):
-                for inp in transition.get("inputs", []):
-                    if inp not in produced and inp not in signature:
-                        signature.append(inp)
-                for out in transition.get("outputs", []):
-                    produced.add(out)
-        return signature
+                inputs.update(transition.get("inputs", []))
+                outputs.update(transition.get("outputs", []))
+
+    signature = list(inputs - outputs)
+    return sorted(signature)
 
     def execute(self, *inputs):
         # Local import to prevent circular dependency
